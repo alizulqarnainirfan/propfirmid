@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  password  String
+  role      String    @default("user")
+  createdAt DateTime  @default(now())
+  blogs     Blog[]
+  comments  Comment[]
+  posts     Post[]
+  reviews   Review[]
+}
+
+model PropFirm {
+  id                 String      @id @default(cuid())
+  name               String
+  logo               String
+  type               String
+  rating             Float       @default(0)
+  trusted            Int         @default(0)
+  discount           String?
+  price              Float
+  discounted         Float
+  bonus              String?
+  profitSplit        String?
+  maxDrawdown        String?
+  dailyDrawdown      String?
+  minTradingDays     Int?
+  maxTradingDays     Int?
+  payoutSpeed        String?
+  platforms          String?
+  instruments        String?
+  leverage           String?
+  refundable         Boolean     @default(false)
+  scalingPlan        Boolean     @default(false)
+  newsTrading        Boolean     @default(true)
+  weekendHolding     Boolean     @default(true)
+  eaAllowed          Boolean     @default(true)
+  copyTrading        Boolean     @default(false)
+  minPayoutAmount    String?
+  payoutMethods      String?
+  trustScore         Float?
+  verificationStatus String?
+  createdAt          DateTime    @default(now())
+  challenges         Challenge[]
+  reviews            Review[]
+}
+
+model Challenge {
+  id              String   @id @default(cuid())
+  firmId          String
+  name            String
+  accountSize     String
+  price           Float
+  discountedPrice Float
+  phase1Target    String?
+  phase2Target    String?
+  maxDrawdown     String
+  dailyDrawdown   String?
+  minDays         Int?
+  maxDays         Int?
+  profitSplit     String
+  refundable      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  firm            PropFirm @relation(fields: [firmId], references: [id])
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  content   String
+  authorId  String
+  createdAt DateTime  @default(now())
+  comments  Comment[]
+  author    User      @relation(fields: [authorId], references: [id])
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String
+  postId    String
+  authorId  String
+  parentId  String?
+  createdAt DateTime  @default(now())
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+  author    User      @relation(fields: [authorId], references: [id])
+  post      Post      @relation(fields: [postId], references: [id])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Int
+  content    String
+  proofImage String
+  status     String   @default("pending")
+  firmId     String
+  authorId   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  author     User     @relation(fields: [authorId], references: [id])
+  firm       PropFirm @relation(fields: [firmId], references: [id])
+}
+
+model Giveaway {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  prize       String
+  endDate     DateTime
+  createdAt   DateTime @default(now())
+}
+
+model GiveawaySubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Blog {
+  id         String   @id @default(cuid())
+  title      String
+  slug       String   @unique
+  content    String
+  excerpt    String?
+  coverImage String?
+  published  Boolean  @default(false)
+  authorId   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  author     User     @relation(fields: [authorId], references: [id])
+}
+
+model SiteSettings {
+  id                    String   @id @default(cuid())
+  communityMembers      String   @default("75K+")
+  verifiedReviews       String   @default("3000+")
+  trustedFirms          String   @default("20+")
+  freeAccountsDistributed String @default("5000+")
+  updatedAt            DateTime @updatedAt
+  createdAt            DateTime @default(now())
+}
