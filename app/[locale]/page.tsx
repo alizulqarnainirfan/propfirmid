@@ -15,7 +15,8 @@ async function getTopFirms() {
 
 async function getSiteSettings() {
   try {
-    let settings = await (prisma as any).siteSettings.findFirst()
+    // @ts-ignore - Prisma client types will be available after build
+    let settings = await prisma.siteSettings.findFirst()
     
     // If no settings exist, return defaults
     if (!settings) {

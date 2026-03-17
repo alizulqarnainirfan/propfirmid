@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
 
   // Handle locale routing
   if (pathname === '/') {
-    return NextResponse.redirect(new URL('/en', request.url))
+    return NextResponse.redirect(new URL('/id', request.url))
   }
 
   // Admin route protection - check for admin routes
