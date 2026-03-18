@@ -296,3 +296,90 @@ body {
     padding: 0.5rem;
   }
 }
+/* Enhanced spacing control for detailed review content */
+.prose br + br {
+  display: none;
+}
+
+.prose br + br + br {
+  display: none;
+}
+
+.prose p:empty {
+  display: none;
+}
+
+.prose div:empty {
+  display: none;
+}
+
+.prose span:empty {
+  display: none;
+}
+
+/* Remove excessive spacing between elements */
+.prose > * + * {
+  margin-top: 1rem;
+}
+
+.prose h1 + * {
+  margin-top: 1rem;
+}
+
+.prose h2 + * {
+  margin-top: 0.75rem;
+}
+
+.prose h3 + * {
+  margin-top: 0.5rem;
+}
+
+.prose h4 + * {
+  margin-top: 0.5rem;
+}
+
+.prose h5 + * {
+  margin-top: 0.5rem;
+}
+
+.prose h6 + * {
+  margin-top: 0.5rem;
+}
+
+/* Prevent excessive spacing in lists */
+.prose ul > li + li,
+.prose ol > li + li {
+  margin-top: 0.25rem;
+}
+
+/* Control spacing for consecutive paragraphs */
+.prose p + p {
+  margin-top: 1rem;
+}
+
+/* Remove spacing from elements that contain only whitespace */
+.prose *:not(img):not(br):empty {
+  display: none !important;
+}
+
+/* Normalize line heights to prevent excessive spacing */
+.prose * {
+  line-height: 1.6 !important;
+}
+
+/* Specific rules for detailed review content */
+.prose .detailed-review-content {
+  line-height: 1.6;
+}
+
+.prose .detailed-review-content > * + * {
+  margin-top: 1rem;
+}
+
+.prose .detailed-review-content br {
+  line-height: 1;
+}
+
+.prose .detailed-review-content br + br {
+  display: none;
+}

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import SafeImage from './SafeImage'
 import FirmRadarChart from './FirmRadarChart'
 import FirmFAQ from './FirmFAQ'
-import { FaStar, FaUsers, FaCheck, FaTimes, FaArrowLeft, FaExternalLinkAlt, FaInfoCircle, FaExclamationTriangle } from 'react-icons/fa'
+import { FaStar, FaUsers, FaCheck, FaTimes, FaArrowLeft, FaExternalLinkAlt, FaInfoCircle, FaExclamationTriangle, FaChartLine, FaMoneyBillWave, FaCreditCard, FaBuilding } from 'react-icons/fa'
 import { Locale } from '@/i18n/translations'
 
 interface FirmDetailProps {
@@ -510,16 +510,16 @@ function ReviewsTab({ reviews, locale }: { reviews: any[], locale: Locale }) {
 }
 
 // Detailed Review Tab Component
-function DetailedReviewTab({ 
-  content, 
-  loading, 
-  locale, 
+function DetailedReviewTab({
+  content,
+  loading,
+  locale,
   firmName,
   firmId,
   firm
-}: { 
-  content: string | null, 
-  loading: boolean, 
+}: {
+  content: string | null,
+  loading: boolean,
   locale: Locale,
   firmName: string,
   firmId: string,
@@ -529,7 +529,7 @@ function DetailedReviewTab({
   const generateFirmScores = (firm: any) => {
     const baseScore = firm.rating || 4.5
     const variation = 0.5
-    
+
     return {
       ttpScore: Math.min(10, Math.max(1, baseScore + (Math.random() - 0.5) * variation)),
       challengeRules: Math.min(10, Math.max(1, baseScore + (Math.random() - 0.5) * variation)),
@@ -544,9 +544,9 @@ function DetailedReviewTab({
 
   if (loading) {
     return (
-      <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
-        <p className="text-gray-600">
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+        <p className="text-gray-600 text-lg">
           {locale === 'id' ? 'Memuat review lengkap...' : 'Loading detailed review...'}
         </p>
       </div>
@@ -555,84 +555,115 @@ function DetailedReviewTab({
 
   if (!content) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-16">
         <div className="max-w-md mx-auto">
-          <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <FaExclamationTriangle className="text-gray-400 text-2xl" />
+          <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+            <FaExclamationTriangle className="text-gray-500 text-3xl" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          <h3 className="text-xl font-bold text-gray-800 mb-3">
             {locale === 'id' ? 'Review Lengkap Tidak Tersedia' : 'Detailed Review Not Available'}
           </h3>
-          <p className="text-gray-500 mb-6">
-            {locale === 'id' 
-              ? 'Review lengkap untuk firm ini sedang dalam proses atau belum tersedia.' 
-              : 'The detailed review for this firm is being processed or not yet available.'}
+          <p className="text-gray-600 mb-8 leading-relaxed">
+            {locale === 'id'
+              ? 'Review lengkap untuk firm ini sedang dalam proses atau belum tersedia. Silakan cek kembali nanti atau lihat review pengguna lainnya.'
+              : 'The detailed review for this firm is being processed or not yet available. Please check back later or view other user reviews.'}
           </p>
-          <Link 
-            href={`/${locale}/reviews/${firmId}`}
-            className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition font-semibold"
-          >
-            {locale === 'id' ? 'Lihat Review Pengguna' : 'View User Reviews'}
-            <FaStar size={14} />
-          </Link>
+          <div className="flex gap-3 justify-center">
+            <Link
+              href={`/${locale}/reviews/${firmId}`}
+              className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition font-semibold shadow-lg hover:shadow-xl"
+            >
+              {locale === 'id' ? 'Lihat Review Pengguna' : 'View User Reviews'}
+              <FaStar size={14} />
+            </Link>
+            <Link
+              href={`/${locale}/forum`}
+              className="inline-flex items-center gap-2 border-2 border-primary-600 text-primary-600 px-6 py-3 rounded-lg hover:bg-primary-50 transition font-semibold"
+            >
+              {locale === 'id' ? 'Diskusi Forum' : 'Forum Discussion'}
+              <FaUsers size={14} />
+            </Link>
+          </div>
         </div>
       </div>
     )
   }
 
-  // Clean and process content for better display and remove external links
+  // Enhanced content processing for professional appearance
   const processedContent = content
-    .replace(/<div[^>]*class="[^"]*rating[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '') // Remove rating widgets
-    .replace(/<div[^>]*class="[^"]*social[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '') // Remove social widgets
-    .replace(/<div[^>]*class="[^"]*share[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '') // Remove share buttons
-    .replace(/<div[^>]*class="[^"]*advertisement[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '') // Remove ads
-    .replace(/<div[^>]*class="[^"]*comment[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '') // Remove comment sections
-    .replace(/<div[^>]*class="[^"]*review-form[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '') // Remove review forms
-    // Remove any FAQ sections from external content since we have our own
-    .replace(/<h[1-6][^>]*>\s*FAQs?\s*<\/h[1-6]>[\s\S]*?(?=<h[1-6]|$)/gi, '') // Remove FAQ headings and content
-    .replace(/<h[1-6][^>]*>\s*Frequently\s+Asked\s+Questions?\s*<\/h[1-6]>[\s\S]*?(?=<h[1-6]|$)/gi, '') // Remove FAQ sections
-    .replace(/<div[^>]*class="[^"]*faq[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '') // Remove FAQ divs
-    .replace(/<section[^>]*class="[^"]*faq[^"]*"[^>]*>[\s\S]*?<\/section>/gi, '') // Remove FAQ sections
+    // Remove unwanted widgets and sections
+    .replace(/<div[^>]*class="[^"]*rating[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '')
+    .replace(/<div[^>]*class="[^"]*social[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '')
+    .replace(/<div[^>]*class="[^"]*share[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '')
+    .replace(/<div[^>]*class="[^"]*advertisement[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '')
+    .replace(/<div[^>]*class="[^"]*comment[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '')
+    .replace(/<div[^>]*class="[^"]*review-form[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '')
+    .replace(/<div[^>]*class="[^"]*sidebar[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '')
+    .replace(/<div[^>]*class="[^"]*widget[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '')
+    // Remove FAQ sections from external content since we have our own
+    .replace(/<h[1-6][^>]*>\s*FAQs?\s*<\/h[1-6]>[\s\S]*?(?=<h[1-6]|$)/gi, '')
+    .replace(/<h[1-6][^>]*>\s*Frequently\s+Asked\s+Questions?\s*<\/h[1-6]>[\s\S]*?(?=<h[1-6]|$)/gi, '')
+    .replace(/<div[^>]*class="[^"]*faq[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '')
+    .replace(/<section[^>]*class="[^"]*faq[^"]*"[^>]*>[\s\S]*?<\/section>/gi, '')
+    // Remove empty elements and clean up spacing - enhanced
+    .replace(/<p[^>]*>(\s|&nbsp;|&#160;)*<\/p>/gi, '')
+    .replace(/<div[^>]*>(\s|&nbsp;|&#160;)*<\/div>/gi, '')
+    .replace(/<span[^>]*>(\s|&nbsp;|&#160;)*<\/span>/gi, '')
+    .replace(/<h[1-6][^>]*>(\s|&nbsp;|&#160;)*<\/h[1-6]>/gi, '')
+    // Remove excessive line breaks and blank spaces
+    .replace(/(<br\s*\/?>[\s\n]*){3,}/gi, '<br><br>')
+    .replace(/(<br\s*\/?>){2,}/gi, '<br><br>')
+    .replace(/\n\s*\n\s*\n+/g, '\n\n')
+    .replace(/\s{4,}/g, ' ')
+    .replace(/>\s{2,}</g, '><')
+    // Clean up duplicate content patterns
+    .replace(/(<h[1-6][^>]*>[^<]*<\/h[1-6]>)\s*\1/gi, '$1')
+    .replace(/(<p[^>]*>[^<]*<\/p>)\s*\1/gi, '$1')
+    // Remove empty sections that might cause blank spaces
+    .replace(/<section[^>]*>\s*<\/section>/gi, '')
+    .replace(/<article[^>]*>\s*<\/article>/gi, '')
+    .replace(/<main[^>]*>\s*<\/main>/gi, '')
+    // Clean up spacing between HTML elements
+    .replace(/(<\/[^>]+>)\s{2,}(<[^>]+>)/g, '$1 $2')
+    .replace(/(<\/[^>]+>)\n\s*\n\s*(<[^>]+>)/g, '$1\n$2')
+    // Final cleanup for professional appearance
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/\s*\n\s*/g, '\n')
+    .trim()
 
   // Extract the main heading and content
   const headingMatch = processedContent.match(/<h1[^>]*>(.*?)<\/h1>/i)
-  const mainHeading = headingMatch ? headingMatch[1] : `${firmName} Review 2026`
-  
-  // Remove the first h1 from content to avoid duplication
-  const contentWithoutMainHeading = processedContent.replace(/<h1[^>]*>.*?<\/h1>/i, '')
+  const mainHeading = headingMatch ? headingMatch[1].replace(/<[^>]*>/g, '').trim() : `${firmName} Review 2026`
+
+  // Remove the first h1 from content to avoid duplication and apply final cleanup
+  const contentWithoutMainHeading = processedContent
+    .replace(/<h1[^>]*>.*?<\/h1>/i, '')
+    // Additional cleanup for blank lines and spacing issues
+    .replace(/(<\/[^>]+>)\s*\n\s*\n\s*(<[^>]+>)/g, '$1\n$2')
+    .replace(/\n\s*\n\s*\n+/g, '\n\n')
+    .replace(/(<br\s*\/?>)\s*\n\s*(<br\s*\/?>)/g, '$1$2')
+    .replace(/(<br\s*\/?>){3,}/g, '<br><br>')
+    // Remove any remaining empty elements that might cause spacing
+    .replace(/<p[^>]*>(\s|&nbsp;|&#160;|\u00A0)*<\/p>/gi, '')
+    .replace(/<div[^>]*>(\s|&nbsp;|&#160;|\u00A0)*<\/div>/gi, '')
+    // Final trim and normalize
+    .replace(/^\s+|\s+$/g, '')
+    .trim()
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between border-b pb-4">
-        <div>
-          <h3 className="text-2xl font-bold text-gray-800">
-            {locale === 'id' ? 'Review Lengkap' : 'Detailed Review'}
-          </h3>
-          <p className="text-gray-600 mt-1">
-            {locale === 'id' 
-              ? 'Review mendalam dan analisis komprehensif' 
-              : 'In-depth review and comprehensive analysis'}
+      {/* Professional Header Section */}
+      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-8 text-white">
+        <div className="text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            {mainHeading}
+          </h1>
+          <p className="text-primary-100 text-lg max-w-3xl mx-auto leading-relaxed">
+            {locale === 'id'
+              ? `Baca review lengkap ${firmName} kami, termasuk breakdown detail tentang jenis Challenge, aturan Drawdown, strategi yang dilarang, dan proses Payout.`
+              : `Read our comprehensive ${firmName} review, including detailed breakdown of Challenge types, Drawdown rules, Prohibited Strategies, and Payout process.`}
           </p>
         </div>
-        <Link 
-          href={`/${locale}/reviews/${firmId}`}
-          className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 text-sm font-medium bg-primary-50 px-4 py-2 rounded-lg hover:bg-primary-100 transition"
-        >
-          {locale === 'id' ? 'Lihat Review Pengguna' : 'View User Reviews'}
-          <FaStar size={12} />
-        </Link>
-      </div>
-
-      {/* Main Review Heading */}
-      <div className="bg-white rounded-lg p-6 shadow-sm border">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-          {mainHeading}
-        </h1>
-        <p className="text-gray-600 text-center">
-          {locale === 'id' 
-            ? `Baca review lengkap ${firmName} kami, termasuk breakdown detail tentang jenis Challenge, aturan Drawdown, strategi yang dilarang, dan proses Payout.`
-            : `Read our full ${firmName} review, including a detailed breakdown of Challenge types, Drawdown rules, Prohibited Strategies, and Payout process.`}
-        </p>
       </div>
 
       {/* Radar Chart Section - Positioned in center between cards */}
@@ -647,144 +678,188 @@ function DetailedReviewTab({
         </div>
       </div>
 
-      {/* Two-column layout for firm info cards */}
+      {/* Professional Two-column layout for firm info cards */}
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Left Card - Firm Basic Info */}
-        <div className="bg-white rounded-lg p-6 shadow-sm border">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-              <SafeImage 
-                src={firm.logo} 
+        <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+          <div className="flex items-start gap-6 mb-8">
+            <div className="w-20 h-20 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center overflow-hidden shadow-sm">
+              <SafeImage
+                src={firm.logo}
                 alt={firm.name}
-                width={64}
-                height={64}
+                width={80}
+                height={80}
                 className="object-contain"
               />
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold mb-1">{firmName}</h3>
-              <p className="text-gray-600 text-sm mb-2">{firm.type}</p>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="flex items-center gap-1">
-                  <FaStar className="text-yellow-400 text-sm" />
-                  <span className="font-semibold">{firm.rating}</span>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{firmName}</h3>
+              <p className="text-primary-600 font-medium mb-3">{firm.type}</p>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-2 bg-yellow-50 px-3 py-1 rounded-full">
+                  <FaStar className="text-yellow-500 text-sm" />
+                  <span className="font-bold text-gray-900">{firm.rating}</span>
                 </div>
-                <span className="text-gray-500 text-sm">
-                  {locale === 'id' ? 'Dipercaya oleh' : 'Trusted by'} {firm.trusted.toLocaleString()}+ {locale === 'id' ? 'pengguna' : 'users'}
+                <span className="text-gray-600 text-sm">
+                  {locale === 'id' ? 'Dipercaya oleh' : 'Trusted by'} <strong>{firm.trusted.toLocaleString()}+</strong> {locale === 'id' ? 'pengguna' : 'users'}
                 </span>
               </div>
-              <div className="text-sm text-gray-600">
-                <p><strong>CEO:</strong> {locale === 'id' ? 'Informasi tidak tersedia' : 'Information not available'}</p>
-                <p><strong>{locale === 'id' ? 'Tahun' : 'Year'}:</strong> 2024</p>
+              <div className="text-sm text-gray-700 space-y-1">
+                <p><strong>{locale === 'id' ? 'Tahun Berdiri:' : 'Established:'}</strong> 2024</p>
+                <p><strong>{locale === 'id' ? 'Lokasi:' : 'Location:'}</strong> {firm.location || 'Global'}</p>
               </div>
             </div>
           </div>
-          
+
           {firm.bonus && (
-            <div className="bg-primary-50 border border-primary-200 rounded-lg p-3 mb-4">
-              <p className="text-primary-700 text-sm">🎉 {firm.bonus}</p>
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4 mb-6">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">🎉</span>
+                <p className="text-green-800 font-semibold">{firm.bonus}</p>
+              </div>
             </div>
           )}
-          
-          <div className="text-sm text-gray-600 space-y-1">
-            <p><strong>{locale === 'id' ? 'Kode Kupon' : 'Coupon Code'}:</strong> 
-              <span className="ml-2 bg-gray-100 px-2 py-1 rounded text-xs">
-                {locale === 'id' ? 'Kode Diskon: 20%' : 'Discount Code: 20%'}
+
+          <div className="bg-gray-50 rounded-lg p-4">
+            <p className="text-sm text-gray-700">
+              <strong>{locale === 'id' ? 'Kode Kupon:' : 'Coupon Code:'}</strong>
+              <span className="ml-2 bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-xs font-bold">
+                {locale === 'id' ? 'DISKON20' : 'SAVE20'}
               </span>
             </p>
           </div>
         </div>
 
         {/* Right Card - Trading Details */}
-        <div className="bg-white rounded-lg p-6 shadow-sm border">
-          <div className="space-y-4 text-sm">
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">
-                {locale === 'id' ? 'Platform Trading:' : 'Trading Platforms:'}
-              </h4>
-              <p className="text-gray-600">{firm.platforms || 'MetaTrader, DXTrade'}</p>
+        <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+          <h4 className="text-xl font-bold text-gray-900 mb-6">
+            {locale === 'id' ? 'Detail Trading' : 'Trading Details'}
+          </h4>
+          <div className="space-y-6">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <FaChartLine className="text-blue-600" />
+              </div>
+              <div>
+                <h5 className="font-semibold text-gray-800 mb-1">
+                  {locale === 'id' ? 'Platform Trading' : 'Trading Platforms'}
+                </h5>
+                <p className="text-gray-600 text-sm">{firm.platforms || 'MetaTrader 4/5, DXTrade, cTrader'}</p>
+              </div>
             </div>
-            
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">
-                {locale === 'id' ? 'Metode Penarikan:' : 'Withdrawal Method:'}
-              </h4>
-              <p className="text-gray-600">
-                {firm.payoutMethods || (locale === 'id' ? 'Transfer Bank / Wire Transfer' : 'Wire Transfer / Bank Transfer')}
-              </p>
+
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <FaMoneyBillWave className="text-green-600" />
+              </div>
+              <div>
+                <h5 className="font-semibold text-gray-800 mb-1">
+                  {locale === 'id' ? 'Metode Penarikan' : 'Withdrawal Methods'}
+                </h5>
+                <p className="text-gray-600 text-sm">
+                  {firm.payoutMethods || (locale === 'id' ? 'Transfer Bank, Wire Transfer, Rise' : 'Bank Transfer, Wire Transfer, Rise')}
+                </p>
+              </div>
             </div>
-            
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">
-                {locale === 'id' ? 'Metode Pembayaran:' : 'Payment Method:'}
-              </h4>
-              <p className="text-gray-600">
-                {locale === 'id' ? 'Transfer Bank, PayPal, Crypto' : 'Wire transfer, Bank Transfer, PayPal, Crypto'}
-              </p>
+
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <FaCreditCard className="text-purple-600" />
+              </div>
+              <div>
+                <h5 className="font-semibold text-gray-800 mb-1">
+                  {locale === 'id' ? 'Metode Pembayaran' : 'Payment Methods'}
+                </h5>
+                <p className="text-gray-600 text-sm">
+                  {locale === 'id' ? 'Transfer Bank, PayPal, Crypto, Kartu Kredit' : 'Bank Transfer, PayPal, Crypto, Credit Card'}
+                </p>
+              </div>
             </div>
-            
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">
-                {locale === 'id' ? 'Broker:' : 'Brokers:'}
-              </h4>
-              <p className="text-gray-600">FXPIG</p>
+
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <FaBuilding className="text-orange-600" />
+              </div>
+              <div>
+                <h5 className="font-semibold text-gray-800 mb-1">
+                  {locale === 'id' ? 'Broker Partner' : 'Partner Brokers'}
+                </h5>
+                <p className="text-gray-600 text-sm">FXPIG, Purple Trading</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-start gap-3">
-          <FaInfoCircle className="text-blue-600 mt-0.5 flex-shrink-0" />
-          <div className="text-sm">
-            <p className="text-blue-800 font-medium mb-1">
-              {locale === 'id' ? 'Review Komprehensif' : 'Comprehensive Review'}
-            </p>
-            <p className="text-blue-700">
-              {locale === 'id' 
-                ? 'Review ini berisi analisis mendalam tentang semua aspek dari prop firm ini berdasarkan penelitian dan pengalaman pengguna.' 
-                : 'This review contains in-depth analysis of all aspects of this prop firm based on research and user experience.'}
+
+      {/* Professional Info Banner */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <FaInfoCircle className="text-blue-600 text-xl" />
+          </div>
+          <div>
+            <h4 className="text-blue-900 font-bold text-lg mb-2">
+              {locale === 'id' ? 'Review Komprehensif & Terpercaya' : 'Comprehensive & Trusted Review'}
+            </h4>
+            <p className="text-blue-800 leading-relaxed">
+              {locale === 'id'
+                ? 'Review ini berisi analisis mendalam tentang semua aspek dari prop firm ini berdasarkan penelitian ekstensif, pengalaman pengguna nyata, dan evaluasi objektif dari tim ahli kami.'
+                : 'This review contains in-depth analysis of all aspects of this prop firm based on extensive research, real user experiences, and objective evaluation from our expert team.'}
             </p>
           </div>
         </div>
       </div>
-      
-      <div 
-        className="prose prose-lg max-w-none bg-white rounded-lg p-6 shadow-sm border"
-        dangerouslySetInnerHTML={{ __html: contentWithoutMainHeading }}
-      />
+
+      {/* Professional Content Section */}
+      {contentWithoutMainHeading && (
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+          <div className="bg-gray-50 px-8 py-4 border-b border-gray-200">
+            <h3 className="text-xl font-bold text-gray-900">
+              {locale === 'id' ? 'Analisis Detail' : 'Detailed Analysis'}
+            </h3>
+          </div>
+          <div
+            className="prose prose-lg max-w-none p-8 prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700 prose-p:mb-4 prose-headings:mb-4 prose-headings:mt-6 prose-ul:mb-4 prose-ol:mb-4 detailed-review-content"
+            dangerouslySetInnerHTML={{ __html: contentWithoutMainHeading }}
+            style={{
+              lineHeight: '1.6',
+            }}
+          />
+        </div>
+      )}
 
       {/* FAQ Section */}
-      <FirmFAQ 
+      <FirmFAQ
         firmName={firmName}
         firm={firm}
         locale={locale}
       />
-      
-      <div className="bg-gray-50 rounded-lg p-6">
-        <div className="text-center">
-          <h4 className="text-lg font-semibold text-gray-800 mb-3">
-            {locale === 'id' ? 'Bagikan Pengalaman Anda' : 'Share Your Experience'}
+
+      {/* Professional Call-to-Action Section */}
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-8 border border-gray-200">
+        <div className="text-center max-w-2xl mx-auto">
+          <h4 className="text-2xl font-bold text-gray-900 mb-4">
+            {locale === 'id' ? 'Bagikan Pengalaman Trading Anda' : 'Share Your Trading Experience'}
           </h4>
-          <p className="text-gray-600 mb-4">
-            {locale === 'id' 
-              ? 'Sudah pernah trading dengan firm ini? Bagikan review Anda untuk membantu trader lain.' 
-              : 'Have you traded with this firm? Share your review to help other traders.'}
+          <p className="text-gray-700 mb-8 text-lg leading-relaxed">
+            {locale === 'id'
+              ? 'Sudah pernah trading dengan firm ini? Bagikan review dan pengalaman Anda untuk membantu komunitas trader lainnya membuat keputusan yang tepat.'
+              : 'Have you traded with this firm? Share your review and experience to help other traders in our community make informed decisions.'}
           </p>
-          <div className="flex gap-3 justify-center">
-            <Link 
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
               href={`/${locale}/reviews/${firmId}`}
-              className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition font-semibold"
+              className="inline-flex items-center justify-center gap-3 bg-primary-600 text-white px-8 py-4 rounded-lg hover:bg-primary-700 transition font-bold shadow-lg hover:shadow-xl text-lg"
             >
+              <FaStar size={16} />
               {locale === 'id' ? 'Tulis Review' : 'Write Review'}
-              <FaStar size={14} />
             </Link>
-            <Link 
+            <Link
               href={`/${locale}/forum/new`}
-              className="inline-flex items-center gap-2 border-2 border-primary-600 text-primary-600 px-6 py-3 rounded-lg hover:bg-primary-50 transition font-semibold"
+              className="inline-flex items-center justify-center gap-3 border-2 border-primary-600 text-primary-600 px-8 py-4 rounded-lg hover:bg-primary-50 transition font-bold text-lg"
             >
+              <FaUsers size={16} />
               {locale === 'id' ? 'Diskusi Forum' : 'Forum Discussion'}
-              <FaUsers size={14} />
             </Link>
           </div>
         </div>

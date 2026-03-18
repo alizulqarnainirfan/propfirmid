@@ -94,20 +94,44 @@ export async function GET(request: Request) {
       .replace(/<div[^>]*>\s*<h[1-6][^>]*>\s*FAQs?\s*<\/h[1-6]>\s*<\/div>/gi, '')
       .replace(/<section[^>]*>\s*<h[1-6][^>]*>\s*FAQs?\s*<\/h[1-6]>\s*<\/section>/gi, '')
 
-    // Clean up and format content
+    // Enhanced content cleanup and formatting for professional appearance
     content = content
-      // Remove empty paragraphs and divs
+      // Remove empty and whitespace-only elements
       .replace(/<p[^>]*>\s*<\/p>/gi, '')
       .replace(/<div[^>]*>\s*<\/div>/gi, '')
-      // Fix spacing around headings
-      .replace(/(<\/h[1-6]>)/gi, '$1\n\n')
-      .replace(/(<h[1-6][^>]*>)/gi, '\n\n$1')
-      // Fix paragraph spacing
-      .replace(/(<\/p>)/gi, '$1\n')
-      .replace(/(<p[^>]*>)/gi, '\n$1')
-      // Clean up excessive whitespace but preserve structure
-      .replace(/\n\s*\n\s*\n/g, '\n\n')
+      .replace(/<span[^>]*>\s*<\/span>/gi, '')
+      .replace(/<h[1-6][^>]*>\s*<\/h[1-6]>/gi, '')
+      .replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '<br>')
+      .replace(/<br\s*\/?>\s*<br\s*\/?>\s*<br\s*\/?>/gi, '<br>')
+      // Remove duplicate content patterns
+      .replace(/(<h[1-6][^>]*>[^<]*<\/h[1-6]>)\s*\1/gi, '$1')
+      .replace(/(<p[^>]*>[^<]*<\/p>)\s*\1/gi, '$1')
+      .replace(/(<div[^>]*>[^<]*<\/div>)\s*\1/gi, '$1')
+      // Remove excessive line breaks and whitespace
+      .replace(/(<br\s*\/?>){3,}/gi, '<br><br>')
+      .replace(/\n\s*\n\s*\n+/g, '\n\n')
+      .replace(/\s{3,}/g, ' ')
       .replace(/>\s+</g, '><')
+      // Remove empty paragraphs with just &nbsp; or whitespace
+      .replace(/<p[^>]*>(\s|&nbsp;|&#160;)*<\/p>/gi, '')
+      .replace(/<div[^>]*>(\s|&nbsp;|&#160;)*<\/div>/gi, '')
+      // Clean up spacing between elements
+      .replace(/(<\/[^>]+>)\s*(<[^>]+>)/g, '$1$2')
+      // Remove multiple consecutive line breaks in HTML
+      .replace(/(<br\s*\/?>[\s\n]*){2,}/gi, '<br><br>')
+      // Fix spacing around headings - more controlled
+      .replace(/\s*(<h[1-6][^>]*>)/gi, '\n$1')
+      .replace(/(<\/h[1-6]>)\s*/gi, '$1\n')
+      // Fix paragraph spacing - more controlled
+      .replace(/\s*(<p[^>]*>)/gi, '\n$1')
+      .replace(/(<\/p>)\s*/gi, '$1\n')
+      // Remove broken or incomplete HTML tags
+      .replace(/<[^>]*$/g, '')
+      .replace(/^[^<]*>/g, '')
+      // Final cleanup - remove excessive whitespace and normalize
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/\s*\n\s*/g, '\n')
+      .replace(/^\s+|\s+$/g, '')
       .trim()
 
     // Remove any remaining problematic elements

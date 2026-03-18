@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { FaStar, FaUsers, FaChartLine, FaGift } from 'react-icons/fa'
 import FirmCard from '@/components/FirmCard'
+import HomeCompareSection from '@/components/HomeCompareSection'
 import { translations, Locale } from '@/i18n/translations'
 import { prisma } from '@/lib/prisma'
 import GiveawaySubscribe from '@/components/GiveawaySubscribe'
@@ -122,6 +123,9 @@ export default async function Home({ params }: { params: { locale: Locale } }) {
           </div>
         </div>
       </section>
+
+      {/* Compare Firms Section */}
+      <HomeCompareSection locale={params.locale} />
 
       {/* Features */}
       <section className="py-16 bg-white">
