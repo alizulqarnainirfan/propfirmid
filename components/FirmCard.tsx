@@ -1,8 +1,10 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import SafeImage from './SafeImage'
-import { FaStar, FaUsers } from 'react-icons/fa'
+import { FaStar, FaUsers, FaCopy, FaCheck } from 'react-icons/fa'
 import { Locale } from '@/i18n/translations'
+import { getFirmUrl, hasFirmUrl } from '@/utils/firmUrls'
 
 interface FirmCardProps {
   firm: {
@@ -22,6 +24,23 @@ interface FirmCardProps {
 }
 
 export default function FirmCard({ firm, rank, locale }: FirmCardProps) {
+  const firmUrl = getFirmUrl(firm.name)
+  const hasOfficialUrl = hasFirmUrl(firm.name)
+  const [copied, setCopied] = useState(false)
+
+  const handleCopyCoupon = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    try {
+      await navigator.clipboard.writeText('PROPINDO')
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy coupon code:', err)
+    }
+  }
+
   return (
     <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition p-6 relative group">
       {rank && (
@@ -79,6 +98,38 @@ export default function FirmCard({ firm, rank, locale }: FirmCardProps) {
         </div>
       </Link>
 
+      {/* Coupon Code Section */}
+      <div className="mb-4">
+        <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-lg p-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-700">
+                {locale === 'id' ? 'Kode Kupon:' : 'Coupon Code:'}
+              </span>
+              <span className="font-bold text-primary-700 bg-white px-2 py-1 rounded text-sm">
+                PROPINDO
+              </span>
+            </div>
+            <button
+              onClick={handleCopyCoupon}
+              className="flex items-center justify-center w-8 h-8 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-200 hover:scale-105"
+              title={locale === 'id' ? 'Salin kode kupon' : 'Copy coupon code'}
+            >
+              {copied ? (
+                <FaCheck size={12} className="text-green-200" />
+              ) : (
+                <FaCopy size={12} />
+              )}
+            </button>
+          </div>
+          {copied && (
+            <div className="mt-2 text-xs text-green-600 font-medium">
+              {locale === 'id' ? '✓ Kode berhasil disalin!' : '✓ Code copied successfully!'}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Action buttons */}
       <div className="flex gap-2">
         <Link 
@@ -87,12 +138,23 @@ export default function FirmCard({ firm, rank, locale }: FirmCardProps) {
         >
           {locale === 'id' ? 'Detail' : 'Details'}
         </Link>
-        <Link 
-          href={`/${locale}/checkout/${firm.id}`}
-          className="flex-1 text-center bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition font-semibold text-sm"
-        >
-          {locale === 'id' ? 'Beli' : 'Buy'}
-        </Link>
+        {hasOfficialUrl ? (
+          <a 
+            href={firmUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 text-center bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition font-semibold text-sm"
+          >
+            {locale === 'id' ? 'Beli' : 'Buy'}
+          </a>
+        ) : (
+          <Link 
+            href={`/${locale}/checkout/${firm.id}`}
+            className="flex-1 text-center bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition font-semibold text-sm"
+          >
+            {locale === 'id' ? 'Beli' : 'Buy'}
+          </Link>
+        )}
       </div>
     </div>
   )

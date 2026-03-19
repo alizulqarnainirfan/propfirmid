@@ -2,10 +2,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import SafeImage from './SafeImage'
-import FirmRadarChart from './FirmRadarChart'
 import FirmFAQ from './FirmFAQ'
-import { FaStar, FaUsers, FaCheck, FaTimes, FaArrowLeft, FaExternalLinkAlt, FaInfoCircle, FaExclamationTriangle, FaChartLine, FaMoneyBillWave, FaCreditCard, FaBuilding } from 'react-icons/fa'
+import { FaStar, FaUsers, FaCheck, FaTimes, FaArrowLeft, FaExternalLinkAlt, FaInfoCircle, FaExclamationTriangle, FaChartLine, FaMoneyBillWave, FaCreditCard, FaBuilding, FaCopy } from 'react-icons/fa'
 import { Locale } from '@/i18n/translations'
+import { getFirmUrl, hasFirmUrl } from '@/utils/firmUrls'
 
 interface FirmDetailProps {
   firm: {
@@ -50,6 +50,23 @@ export default function FirmDetailContent({ firm, locale }: FirmDetailProps) {
   const [activeTab, setActiveTab] = useState('overview')
   const [firmContent, setFirmContent] = useState<string | null>(null)
   const [contentLoading, setContentLoading] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  const firmUrl = getFirmUrl(firm.name)
+  const hasOfficialUrl = hasFirmUrl(firm.name)
+
+  const handleCopyCoupon = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    try {
+      await navigator.clipboard.writeText('PROPINDO')
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy coupon code:', err)
+    }
+  }
 
   const fetchFirmContent = async (firmName: string) => {
     // Get the firm URL mapping for this specific firm
@@ -206,18 +223,59 @@ export default function FirmDetailContent({ firm, locale }: FirmDetailProps) {
                 </div>
                 
                 <div className="space-y-3">
-                  <Link 
-                    href={`/${locale}/checkout/${firm.id}`}
-                    className="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition font-semibold text-center block"
-                  >
-                    {locale === 'id' ? 'Beli Sekarang' : 'Buy Now'}
-                  </Link>
+                  {hasOfficialUrl ? (
+                    <a 
+                      href={firmUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition font-semibold text-center block"
+                    >
+                      {locale === 'id' ? 'Beli Sekarang' : 'Buy Now'}
+                    </a>
+                  ) : (
+                    <Link 
+                      href={`/${locale}/checkout/${firm.id}`}
+                      className="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition font-semibold text-center block"
+                    >
+                      {locale === 'id' ? 'Beli Sekarang' : 'Buy Now'}
+                    </Link>
+                  )}
                   <Link 
                     href={`/${locale}/reviews/${firm.id}`}
                     className="w-full border-2 border-primary-600 text-primary-600 py-3 rounded-lg hover:bg-primary-50 transition font-semibold text-center block"
                   >
                     {locale === 'id' ? 'Lihat Review' : 'View Reviews'}
                   </Link>
+                  
+                  {/* Coupon Code Section */}
+                  <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          {locale === 'id' ? 'Kode Kupon:' : 'Coupon Code:'}
+                        </span>
+                        <span className="font-bold text-primary-700 bg-white px-3 py-1 rounded text-sm">
+                          PROPINDO
+                        </span>
+                      </div>
+                      <button
+                        onClick={handleCopyCoupon}
+                        className="flex items-center justify-center w-9 h-9 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-200 hover:scale-105"
+                        title={locale === 'id' ? 'Salin kode kupon' : 'Copy coupon code'}
+                      >
+                        {copied ? (
+                          <FaCheck size={14} className="text-green-200" />
+                        ) : (
+                          <FaCopy size={14} />
+                        )}
+                      </button>
+                    </div>
+                    {copied && (
+                      <div className="mt-2 text-xs text-green-600 font-medium">
+                        {locale === 'id' ? '✓ Kode berhasil disalin!' : '✓ Code copied successfully!'}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -525,23 +583,6 @@ function DetailedReviewTab({
   firmId: string,
   firm: any
 }) {
-  // Generate realistic scores based on firm data
-  const generateFirmScores = (firm: any) => {
-    const baseScore = firm.rating || 4.5
-    const variation = 0.5
-
-    return {
-      ttpScore: Math.min(10, Math.max(1, baseScore + (Math.random() - 0.5) * variation)),
-      challengeRules: Math.min(10, Math.max(1, baseScore + (Math.random() - 0.5) * variation)),
-      userRatings: Math.min(10, Math.max(1, firm.rating || baseScore)),
-      slippage: Math.min(10, Math.max(1, baseScore - 1 + (Math.random() - 0.5) * variation)),
-      companyBackground: Math.min(10, Math.max(1, baseScore + (Math.random() - 0.5) * variation))
-    }
-  }
-
-  const scores = generateFirmScores(firm)
-  const overallScore = Number(((scores.ttpScore + scores.challengeRules + scores.userRatings + scores.slippage + scores.companyBackground) / 5).toFixed(1))
-
   if (loading) {
     return (
       <div className="text-center py-12">
@@ -663,18 +704,6 @@ function DetailedReviewTab({
               ? `Baca review lengkap ${firmName} kami, termasuk breakdown detail tentang jenis Challenge, aturan Drawdown, strategi yang dilarang, dan proses Payout.`
               : `Read our comprehensive ${firmName} review, including detailed breakdown of Challenge types, Drawdown rules, Prohibited Strategies, and Payout process.`}
           </p>
-        </div>
-      </div>
-
-      {/* Radar Chart Section - Positioned in center between cards */}
-      <div className="flex justify-center">
-        <div className="w-full max-w-lg">
-          <FirmRadarChart
-            firmName={firmName}
-            scores={scores}
-            overallScore={overallScore}
-            locale={locale}
-          />
         </div>
       </div>
 
