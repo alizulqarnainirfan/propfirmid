@@ -67,7 +67,8 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
           minPayoutAmount: firm.minPayoutAmount || '',
           payoutMethods: firm.payoutMethods || '',
           trustScore: firm.trustScore?.toString() || '0',
-          verificationStatus: firm.verificationStatus || 'Verified'
+          verificationStatus: firm.verificationStatus || 'Verified',
+          buyUrl: firm.buyUrl || ''
         })
         
         // Set existing challenges from firm data
@@ -149,11 +150,13 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
       if (response.ok) {
         router.push(`/${params.locale}/admin/firms`)
       } else {
-        alert('Failed to update firm')
+        const errorData = await response.json()
+        console.error('Update failed:', errorData)
+        alert(`Failed to update firm: ${errorData.details || errorData.error || 'Unknown error'}`)
       }
     } catch (error) {
       console.error('Failed to update firm:', error)
-      alert('Failed to update firm')
+      alert('Failed to update firm: Network error')
     } finally {
       setSaving(false)
     }
@@ -364,6 +367,20 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
                 <option>Pending</option>
                 <option>Unverified</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block mb-2 font-semibold text-gray-700">Buy URL</label>
+              <input
+                type="url"
+                value={formData.buyUrl}
+                onChange={(e) => setFormData({ ...formData, buyUrl: e.target.value })}
+                className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
+                placeholder="https://example.com/"
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Official firm website URL for buy button. Leave empty to use internal checkout.
+              </p>
             </div>
           </div>
 

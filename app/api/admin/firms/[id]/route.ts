@@ -23,6 +23,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const data = await request.json()
+    console.log('Received data:', data)
 
     const firm = await prisma.propFirm.update({
       where: { id: params.id },
@@ -30,37 +31,42 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         name: data.name,
         logo: data.logo,
         type: data.type,
-        rating: parseFloat(data.rating),
-        trusted: parseInt(data.trusted),
-        discount: data.discount,
-        price: parseFloat(data.price),
-        discounted: parseFloat(data.discounted),
-        bonus: data.bonus,
-        profitSplit: data.profitSplit,
-        maxDrawdown: data.maxDrawdown,
-        dailyDrawdown: data.dailyDrawdown,
-        minTradingDays: parseInt(data.minTradingDays),
-        maxTradingDays: parseInt(data.maxTradingDays),
-        payoutSpeed: data.payoutSpeed,
-        platforms: data.platforms,
-        instruments: data.instruments,
-        leverage: data.leverage,
-        refundable: data.refundable,
-        scalingPlan: data.scalingPlan,
-        newsTrading: data.newsTrading,
-        weekendHolding: data.weekendHolding,
-        eaAllowed: data.eaAllowed,
-        copyTrading: data.copyTrading,
-        minPayoutAmount: data.minPayoutAmount,
-        payoutMethods: data.payoutMethods,
-        trustScore: parseFloat(data.trustScore),
-        verificationStatus: data.verificationStatus
+        rating: parseFloat(data.rating) || 0,
+        trusted: parseInt(data.trusted) || 0,
+        discount: data.discount || null,
+        price: parseFloat(data.price) || 0,
+        discounted: parseFloat(data.discounted) || 0,
+        bonus: data.bonus || null,
+        profitSplit: data.profitSplit || null,
+        maxDrawdown: data.maxDrawdown || null,
+        dailyDrawdown: data.dailyDrawdown || null,
+        minTradingDays: data.minTradingDays ? parseInt(data.minTradingDays) : null,
+        maxTradingDays: data.maxTradingDays ? parseInt(data.maxTradingDays) : null,
+        payoutSpeed: data.payoutSpeed || null,
+        platforms: data.platforms || null,
+        instruments: data.instruments || null,
+        leverage: data.leverage || null,
+        refundable: Boolean(data.refundable),
+        scalingPlan: Boolean(data.scalingPlan),
+        newsTrading: Boolean(data.newsTrading),
+        weekendHolding: Boolean(data.weekendHolding),
+        eaAllowed: Boolean(data.eaAllowed),
+        copyTrading: Boolean(data.copyTrading),
+        minPayoutAmount: data.minPayoutAmount || null,
+        payoutMethods: data.payoutMethods || null,
+        trustScore: data.trustScore ? parseFloat(data.trustScore) : null,
+        verificationStatus: data.verificationStatus || 'Verified',
+        buyUrl: data.buyUrl || null
       }
     })
 
     return NextResponse.json(firm)
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update firm' }, { status: 500 })
+    console.error('Error updating firm:', error)
+    return NextResponse.json({ 
+      error: 'Failed to update firm', 
+      details: error instanceof Error ? error.message : 'Unknown error' 
+    }, { status: 500 })
   }
 }
 

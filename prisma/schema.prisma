@@ -50,6 +50,7 @@ model PropFirm {
   payoutMethods      String?
   trustScore         Float?
   verificationStatus String?
+  buyUrl             String?
   createdAt          DateTime    @default(now())
   challenges         Challenge[]
   reviews            Review[]

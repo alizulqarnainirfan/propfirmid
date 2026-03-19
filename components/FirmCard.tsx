@@ -18,14 +18,16 @@ interface FirmCardProps {
     price: number
     discounted: number
     bonus?: string | null
+    buyUrl?: string | null
   }
   rank?: number
   locale: Locale
 }
 
 export default function FirmCard({ firm, rank, locale }: FirmCardProps) {
-  const firmUrl = getFirmUrl(firm.name)
-  const hasOfficialUrl = hasFirmUrl(firm.name)
+  // Use database buyUrl if available, otherwise fall back to utils
+  const firmUrl = firm.buyUrl || getFirmUrl(firm.name)
+  const hasOfficialUrl = firm.buyUrl || hasFirmUrl(firm.name)
   const [copied, setCopied] = useState(false)
 
   const handleCopyCoupon = async (e: React.MouseEvent) => {

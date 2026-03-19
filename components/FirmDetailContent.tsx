@@ -38,6 +38,7 @@ interface FirmDetailProps {
     payoutMethods?: string | null
     trustScore?: number | null
     verificationStatus?: string | null
+    buyUrl?: string | null
     challenges: any[]
     reviews: any[]
   }
@@ -52,8 +53,9 @@ export default function FirmDetailContent({ firm, locale }: FirmDetailProps) {
   const [contentLoading, setContentLoading] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const firmUrl = getFirmUrl(firm.name)
-  const hasOfficialUrl = hasFirmUrl(firm.name)
+  // Use database buyUrl if available, otherwise fall back to utils
+  const firmUrl = firm.buyUrl || getFirmUrl(firm.name)
+  const hasOfficialUrl = firm.buyUrl || hasFirmUrl(firm.name)
 
   const handleCopyCoupon = async (e: React.MouseEvent) => {
     e.preventDefault()
