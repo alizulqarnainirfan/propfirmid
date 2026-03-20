@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FaFacebook, FaTwitter, FaInstagram, FaTelegram } from 'react-icons/fa'
+import { FaDiscord, FaXTwitter, FaInstagram, FaYoutube } from 'react-icons/fa6'
 import { Locale } from '@/i18n/translations'
 
 export default function Footer({ locale }: { locale: Locale }) {
@@ -43,10 +43,10 @@ export default function Footer({ locale }: { locale: Locale }) {
           <div>
             <h4 className="text-white font-semibold mb-4">{isIndonesian ? 'Ikuti Kami' : 'Follow Us'}</h4>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-primary-400"><FaFacebook size={24} /></a>
-              <a href="#" className="hover:text-primary-400"><FaTwitter size={24} /></a>
-              <a href="#" className="hover:text-primary-400"><FaInstagram size={24} /></a>
-              <a href="#" className="hover:text-primary-400"><FaTelegram size={24} /></a>
+              <a href="https://discord.gg/TnbGrtMHT3" className="hover:text-primary-400"><FaDiscord size={24} /></a>
+              <a href="https://x.com/Propfirmindo" className="hover:text-primary-400"><FaXTwitter size={24} /></a>
+              <a href="https://www.instagram.com/propfirmindonesia" className="hover:text-primary-400"><FaInstagram size={24} /></a>
+              <a href="https://youtube.com/@filestudio9306?si=8WoypqHro5K8dU1E" className="hover:text-primary-400"><FaYoutube size={24} /></a>
             </div>
           </div>
         </div>
