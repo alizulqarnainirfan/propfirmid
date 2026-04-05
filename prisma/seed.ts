@@ -417,8 +417,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -432,8 +432,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -447,8 +447,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -462,8 +462,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -477,8 +477,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         }
@@ -500,8 +500,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         },
@@ -515,8 +515,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         },
@@ -530,8 +530,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         },
@@ -545,8 +545,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         }
@@ -566,8 +566,8 @@ async function main() {
           discountedPrice: "23.20",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -579,8 +579,8 @@ async function main() {
           discountedPrice: "47.20",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -592,8 +592,8 @@ async function main() {
           discountedPrice: "119.20",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -605,8 +605,8 @@ async function main() {
           discountedPrice: "239.20",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -618,8 +618,8 @@ async function main() {
           discountedPrice: "479.20",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         }
@@ -641,8 +641,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '8%',
           dailyDrawdown: '4%',
-          minDays: 3,
-          maxDays: 30,
+          minDays: "3",
+          maxDays: "30",
           profitSplit: '80%',
           refundable: false
         },
@@ -656,8 +656,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '8%',
           dailyDrawdown: '4%',
-          minDays: 3,
-          maxDays: 30,
+          minDays: "3",
+          maxDays: "30",
           profitSplit: '80%',
           refundable: false
         },
@@ -671,8 +671,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '8%',
           dailyDrawdown: '4%',
-          minDays: 3,
-          maxDays: 30,
+          minDays: "3",
+          maxDays: "30",
           profitSplit: '80%',
           refundable: false
         }
@@ -694,8 +694,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '90%',
           refundable: true
         },
@@ -709,8 +709,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '90%',
           refundable: true
         },
@@ -724,8 +724,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '90%',
           refundable: true
         },
@@ -739,8 +739,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '90%',
           refundable: true
         }
@@ -762,8 +762,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         },
@@ -777,8 +777,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         },
@@ -792,8 +792,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         },
@@ -807,8 +807,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         }
@@ -830,8 +830,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 4,
-          maxDays: 45,
+          minDays: "4",
+          maxDays: "45",
           profitSplit: '80%',
           refundable: true
         },
@@ -845,8 +845,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 4,
-          maxDays: 45,
+          minDays: "4",
+          maxDays: "45",
           profitSplit: '80%',
           refundable: true
         },
@@ -860,8 +860,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 4,
-          maxDays: 45,
+          minDays: "4",
+          maxDays: "45",
           profitSplit: '80%',
           refundable: true
         },
@@ -875,8 +875,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 4,
-          maxDays: 45,
+          minDays: "4",
+          maxDays: "45",
           profitSplit: '80%',
           refundable: true
         }
@@ -896,8 +896,8 @@ async function main() {
           discountedPrice: "21.25",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -909,8 +909,8 @@ async function main() {
           discountedPrice: "42.50",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -922,8 +922,8 @@ async function main() {
           discountedPrice: "106.25",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -935,8 +935,8 @@ async function main() {
           discountedPrice: "212.50",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         }
@@ -956,8 +956,8 @@ async function main() {
           discountedPrice: "36.00",
           maxDrawdown: '8%',
           dailyDrawdown: '4%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: false
         },
@@ -969,8 +969,8 @@ async function main() {
           discountedPrice: "72.00",
           maxDrawdown: '8%',
           dailyDrawdown: '4%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: false
         },
@@ -982,8 +982,8 @@ async function main() {
           discountedPrice: "180.00",
           maxDrawdown: '8%',
           dailyDrawdown: '4%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: false
         },
@@ -995,8 +995,8 @@ async function main() {
           discountedPrice: "360.00",
           maxDrawdown: '8%',
           dailyDrawdown: '4%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: false
         }
@@ -1016,8 +1016,8 @@ async function main() {
           discountedPrice: "40.00",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -1029,8 +1029,8 @@ async function main() {
           discountedPrice: "80.00",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -1042,8 +1042,8 @@ async function main() {
           discountedPrice: "200.00",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         },
@@ -1055,8 +1055,8 @@ async function main() {
           discountedPrice: "400.00",
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 0,
-          maxDays: 0,
+          minDays: "0",
+          maxDays: "0",
           profitSplit: '80%',
           refundable: true
         }
@@ -1078,8 +1078,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         },
@@ -1093,8 +1093,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         },
@@ -1108,8 +1108,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         },
@@ -1123,8 +1123,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '80%',
           refundable: false
         }
@@ -1146,8 +1146,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '90%',
           refundable: true
         },
@@ -1161,8 +1161,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '90%',
           refundable: true
         },
@@ -1176,8 +1176,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '90%',
           refundable: true
         },
@@ -1191,8 +1191,8 @@ async function main() {
           phase2Target: '5%',
           maxDrawdown: '10%',
           dailyDrawdown: '5%',
-          minDays: 5,
-          maxDays: 60,
+          minDays: "5",
+          maxDays: "60",
           profitSplit: '90%',
           refundable: true
         }
