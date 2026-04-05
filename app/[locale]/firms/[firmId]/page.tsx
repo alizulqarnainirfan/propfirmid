@@ -12,8 +12,10 @@ interface PropFirm {
   rating: number
   trusted: number
   discount?: string | null
+  showCouponCode?: boolean | null
   price: number
   discounted: number
+  priceTag?: string | null
   bonus?: string | null
   profitSplit?: string | null
   maxDrawdown?: string | null

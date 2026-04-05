@@ -16,8 +16,10 @@ interface FirmDetailProps {
     rating: number
     trusted: number
     discount?: string | null
+    showCouponCode?: boolean | null
     price: number
     discounted: number
+    priceTag?: string | null
     bonus?: string | null
     profitSplit?: string | null
     maxDrawdown?: string | null
@@ -56,6 +58,7 @@ export default function FirmDetailContent({ firm, locale }: FirmDetailProps) {
   // Use database buyUrl if available, otherwise fall back to utils
   const firmUrl = firm.buyUrl || getFirmUrl(firm.name)
   const hasOfficialUrl = firm.buyUrl || hasFirmUrl(firm.name)
+  const showCouponCode = firm.showCouponCode !== false
 
   const handleCopyCoupon = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -215,6 +218,13 @@ export default function FirmDetailContent({ firm, locale }: FirmDetailProps) {
             <div className="lg:w-80">
               <div className="bg-gray-50 rounded-xl p-6">
                 <div className="text-center mb-4">
+                  {firm.priceTag && (
+                    <div className="mb-2">
+                      <span className="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">
+                        {firm.priceTag}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <span className="text-gray-400 line-through text-lg">${firm.price}</span>
                     <span className="text-3xl font-bold text-primary-600">${firm.discounted}</span>
@@ -250,34 +260,36 @@ export default function FirmDetailContent({ firm, locale }: FirmDetailProps) {
                   </Link>
                   
                   {/* Coupon Code Section */}
-                  <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-gray-700">
-                          {locale === 'id' ? 'Kode Kupon:' : 'Coupon Code:'}
-                        </span>
-                        <span className="font-bold text-primary-700 bg-white px-3 py-1 rounded text-sm">
-                          PROPINDO
-                        </span>
+                  {showCouponCode && (
+                    <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-700">
+                            {locale === 'id' ? 'Kode Kupon:' : 'Coupon Code:'}
+                          </span>
+                          <span className="font-bold text-primary-700 bg-white px-3 py-1 rounded text-sm">
+                            PROPINDO
+                          </span>
+                        </div>
+                        <button
+                          onClick={handleCopyCoupon}
+                          className="flex items-center justify-center w-9 h-9 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-200 hover:scale-105"
+                          title={locale === 'id' ? 'Salin kode kupon' : 'Copy coupon code'}
+                        >
+                          {copied ? (
+                            <FaCheck size={14} className="text-green-200" />
+                          ) : (
+                            <FaCopy size={14} />
+                          )}
+                        </button>
                       </div>
-                      <button
-                        onClick={handleCopyCoupon}
-                        className="flex items-center justify-center w-9 h-9 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-200 hover:scale-105"
-                        title={locale === 'id' ? 'Salin kode kupon' : 'Copy coupon code'}
-                      >
-                        {copied ? (
-                          <FaCheck size={14} className="text-green-200" />
-                        ) : (
-                          <FaCopy size={14} />
-                        )}
-                      </button>
+                      {copied && (
+                        <div className="mt-2 text-xs text-green-600 font-medium">
+                          {locale === 'id' ? '✓ Kode berhasil disalin!' : '✓ Code copied successfully!'}
+                        </div>
+                      )}
                     </div>
-                    {copied && (
-                      <div className="mt-2 text-xs text-green-600 font-medium">
-                        {locale === 'id' ? '✓ Kode berhasil disalin!' : '✓ Code copied successfully!'}
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -751,14 +763,16 @@ function DetailedReviewTab({
             </div>
           )}
 
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-sm text-gray-700">
-              <strong>{locale === 'id' ? 'Kode Kupon:' : 'Coupon Code:'}</strong>
-              <span className="ml-2 bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-xs font-bold">
-                {locale === 'id' ? 'DISKON20' : 'SAVE20'}
-              </span>
-            </p>
-          </div>
+          {firm.showCouponCode !== false && (
+            <div className="bg-gray-50 rounded-lg p-4">
+              <p className="text-sm text-gray-700">
+                <strong>{locale === 'id' ? 'Kode Kupon:' : 'Coupon Code:'}</strong>
+                <span className="ml-2 bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-xs font-bold">
+                  {locale === 'id' ? 'DISKON20' : 'SAVE20'}
+                </span>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Right Card - Trading Details */}

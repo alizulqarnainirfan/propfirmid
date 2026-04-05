@@ -102,11 +102,7 @@ export default function AdminChallengesPage({ params }: { params: { locale: Loca
   }
 
   const handleAddChallenge = async () => {
-    if (!newChallenge.firmId || !newChallenge.accountSize || !newChallenge.price) {
-      alert('Please fill in Firm, Account Size, and Price')
-      return
-    }
-
+    // All validations removed - allow any input
     try {
       const response = await fetch('/api/admin/challenges', {
         method: 'POST',
@@ -181,12 +177,11 @@ export default function AdminChallengesPage({ params }: { params: { locale: Loca
               
               <div className="space-y-4">
                 <div>
-                  <label className="block mb-2 font-semibold text-gray-700">Select Firm *</label>
+                  <label className="block mb-2 font-semibold text-gray-700">Select Firm</label>
                   <select
                     value={newChallenge.firmId}
                     onChange={(e) => setNewChallenge({ ...newChallenge, firmId: e.target.value })}
                     className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
-                    required
                   >
                     <option value="">-- Select Firm --</option>
                     {firms.map((firm) => (
@@ -208,35 +203,35 @@ export default function AdminChallengesPage({ params }: { params: { locale: Loca
                   </div>
 
                   <div>
-                    <label className="block mb-2 font-semibold text-gray-700">Account Size *</label>
+                    <label className="block mb-2 font-semibold text-gray-700">Account Size</label>
                     <input
                       type="text"
                       value={newChallenge.accountSize}
                       onChange={(e) => setNewChallenge({ ...newChallenge, accountSize: e.target.value })}
                       className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
                       placeholder="e.g., $10,000"
-                      required
                     />
                   </div>
 
                   <div>
-                    <label className="block mb-2 font-semibold text-gray-700">Price *</label>
+                    <label className="block mb-2 font-semibold text-gray-700">Price</label>
                     <input
-                      type="number"
+                      type="text"
                       value={newChallenge.price}
                       onChange={(e) => setNewChallenge({ ...newChallenge, price: e.target.value })}
                       className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
-                      required
+                      placeholder="e.g., $99 or Free or Contact Us"
                     />
                   </div>
 
                   <div>
                     <label className="block mb-2 font-semibold text-gray-700">Discounted Price</label>
                     <input
-                      type="number"
+                      type="text"
                       value={newChallenge.discountedPrice}
                       onChange={(e) => setNewChallenge({ ...newChallenge, discountedPrice: e.target.value })}
                       className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="e.g., $79 or Special Offer or N/A"
                     />
                   </div>
 
@@ -298,20 +293,22 @@ export default function AdminChallengesPage({ params }: { params: { locale: Loca
                   <div>
                     <label className="block mb-2 font-semibold text-gray-700">Min Days</label>
                     <input
-                      type="number"
+                      type="text"
                       value={newChallenge.minDays}
                       onChange={(e) => setNewChallenge({ ...newChallenge, minDays: e.target.value })}
                       className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="e.g., 5 or No Minimum or Flexible"
                     />
                   </div>
 
                   <div>
                     <label className="block mb-2 font-semibold text-gray-700">Max Days</label>
                     <input
-                      type="number"
+                      type="text"
                       value={newChallenge.maxDays}
                       onChange={(e) => setNewChallenge({ ...newChallenge, maxDays: e.target.value })}
                       className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
+                      placeholder="e.g., 30 or Unlimited or Varies"
                     />
                   </div>
 
@@ -382,18 +379,20 @@ export default function AdminChallengesPage({ params }: { params: { locale: Loca
                             </td>
                             <td className="px-6 py-3">
                               <input
-                                type="number"
+                                type="text"
                                 value={editData.price}
                                 onChange={(e) => setEditData({ ...editData, price: e.target.value })}
                                 className="w-full border rounded p-2"
+                                placeholder="e.g., $99 or Free"
                               />
                             </td>
                             <td className="px-6 py-3">
                               <input
-                                type="number"
+                                type="text"
                                 value={editData.discountedPrice}
                                 onChange={(e) => setEditData({ ...editData, discountedPrice: e.target.value })}
                                 className="w-full border rounded p-2"
+                                placeholder="e.g., $79 or Special"
                               />
                             </td>
                             <td className="px-6 py-3">

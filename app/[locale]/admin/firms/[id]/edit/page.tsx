@@ -46,8 +46,10 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
           rating: firm.rating.toString(),
           trusted: firm.trusted.toString(),
           discount: firm.discount || '',
+          showCouponCode: firm.showCouponCode ?? true,
           price: firm.price.toString(),
           discounted: firm.discounted.toString(),
+          priceTag: firm.priceTag || 'Best Price',
           bonus: firm.bonus || '',
           profitSplit: firm.profitSplit || '',
           maxDrawdown: firm.maxDrawdown || '',
@@ -85,11 +87,7 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
   }
 
   const addChallenge = async () => {
-    if (!newChallenge.accountSize || !newChallenge.price) {
-      alert('Please fill in at least Account Size and Price')
-      return
-    }
-
+    // Validation removed - allow any input
     try {
       const response = await fetch('/api/admin/challenges', {
         method: 'POST',
@@ -180,24 +178,22 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-md p-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block mb-2 font-semibold text-gray-700">Firm Name *</label>
+              <label className="block mb-2 font-semibold text-gray-700">Firm Name</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
-                required
               />
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold text-gray-700">Logo URL *</label>
+              <label className="block mb-2 font-semibold text-gray-700">Logo URL</label>
               <input
-                type="url"
+                type="text"
                 value={formData.logo}
                 onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
                 className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
-                required
               />
             </div>
 
@@ -247,6 +243,21 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
             </div>
 
             <div>
+              <label className="block mb-2 font-semibold text-gray-700">Show Coupon Code</label>
+              <label className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-lg p-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.showCouponCode !== false}
+                  onChange={(e) => setFormData({ ...formData, showCouponCode: e.target.checked })}
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-600 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700">
+                  {params.locale === 'id' ? 'Tampilkan kode kupon' : 'Show coupon code'}
+                </span>
+              </label>
+            </div>
+
+            <div>
               <label className="block mb-2 font-semibold text-gray-700">Price</label>
               <input
                 type="number"
@@ -263,6 +274,17 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
                 value={formData.discounted}
                 onChange={(e) => setFormData({ ...formData, discounted: e.target.value })}
                 className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-semibold text-gray-700">Price Tag</label>
+              <input
+                type="text"
+                value={formData.priceTag}
+                onChange={(e) => setFormData({ ...formData, priceTag: e.target.value })}
+                className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
+                placeholder="e.g., Cheapest Price, Best Deal, Limited Offer"
               />
             </div>
 
@@ -473,15 +495,15 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
                   className="border rounded-lg p-2"
                 />
                 <input
-                  type="number"
-                  placeholder="Price"
+                  type="text"
+                  placeholder="Price (e.g., $99 or Free)"
                   value={newChallenge.price}
                   onChange={(e) => setNewChallenge({ ...newChallenge, price: e.target.value })}
                   className="border rounded-lg p-2"
                 />
                 <input
-                  type="number"
-                  placeholder="Discounted Price"
+                  type="text"
+                  placeholder="Discounted Price (e.g., $79 or Special)"
                   value={newChallenge.discountedPrice}
                   onChange={(e) => setNewChallenge({ ...newChallenge, discountedPrice: e.target.value })}
                   className="border rounded-lg p-2"
@@ -522,15 +544,15 @@ export default function EditFirmPage({ params }: { params: { locale: Locale; id:
                   className="border rounded-lg p-2"
                 />
                 <input
-                  type="number"
-                  placeholder="Min Days"
+                  type="text"
+                  placeholder="Min Days (e.g., 5 or No Minimum)"
                   value={newChallenge.minDays}
                   onChange={(e) => setNewChallenge({ ...newChallenge, minDays: e.target.value })}
                   className="border rounded-lg p-2"
                 />
                 <input
-                  type="number"
-                  placeholder="Max Days"
+                  type="text"
+                  placeholder="Max Days (e.g., 30 or Unlimited)"
                   value={newChallenge.maxDays}
                   onChange={(e) => setNewChallenge({ ...newChallenge, maxDays: e.target.value })}
                   className="border rounded-lg p-2"

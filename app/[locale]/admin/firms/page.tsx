@@ -24,10 +24,22 @@ export default function AdminFirmsPage({ params }: { params: { locale: Locale } 
   const fetchFirms = async () => {
     try {
       const response = await fetch('/api/firms')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const data = await response.json()
-      setFirms(data)
+      console.log('Fetched firms data:', data)
+      
+      // Ensure data is an array
+      if (Array.isArray(data)) {
+        setFirms(data)
+      } else {
+        console.error('Expected array but got:', typeof data, data)
+        setFirms([])
+      }
     } catch (error) {
       console.error('Failed to fetch firms:', error)
+      setFirms([]) // Set empty array as fallback
     } finally {
       setLoading(false)
     }
@@ -74,8 +86,9 @@ export default function AdminFirmsPage({ params }: { params: { locale: Locale } 
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {firms.map((firm) => (
-            <div key={firm.id} className="bg-white rounded-xl shadow-md p-6">
+          {Array.isArray(firms) && firms.length > 0 ? (
+            firms.map((firm) => (
+              <div key={firm.id} className="bg-white rounded-xl shadow-md p-6">
               <div className="flex items-start justify-between mb-4">
                 <Image src={firm.logo} alt={firm.name} width={60} height={60} className="rounded-lg" />
                 <div className="flex gap-2">
@@ -100,7 +113,14 @@ export default function AdminFirmsPage({ params }: { params: { locale: Locale } 
                 <span className="text-gray-600">{firm.challenges?.length || 0} challenges</span>
               </div>
             </div>
-          ))}
+          ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-500 text-lg">
+                {loading ? 'Loading firms...' : 'No firms found. Create your first firm!'}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

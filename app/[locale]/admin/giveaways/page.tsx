@@ -1,7 +1,8 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getAuthUser } from '@/lib/auth'
+import { ADMIN_CONFIG } from '@/lib/admin-config'
 import { FaPlus, FaTrash, FaGift } from 'react-icons/fa'
 import { Locale } from '@/i18n/translations'
 
@@ -10,11 +11,14 @@ export default function AdminGiveawaysPage({ params }: { params: { locale: Local
   const [giveaways, setGiveaways] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const descriptionRef = useRef<HTMLTextAreaElement | null>(null)
+  const [flyerDataUrl, setFlyerDataUrl] = useState<string>('')
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     prize: '',
-    endDate: ''
+    endDate: '',
+    customUrl: ''
   })
 
   useEffect(() => {
@@ -41,21 +45,152 @@ export default function AdminGiveawaysPage({ params }: { params: { locale: Local
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      const flyerHtml = flyerDataUrl
+        ? `<div class="mb-4"><img src="${flyerDataUrl}" alt="Giveaway flyer" style="width:100%;height:auto;border-radius:12px;" /></div>`
+        : ''
+
+      const requestData = {
+        ...formData,
+        // Save as HTML so we can support rich formatting + flyer image.
+        description: `${flyerHtml}${formData.description || ''}`
+      }
+
+      console.log('Submitting giveaway data:', requestData)
+
       const response = await fetch('/api/admin/giveaways', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(requestData)
       })
 
       if (response.ok) {
         const newGiveaway = await response.json()
+        console.log('Created giveaway:', newGiveaway)
         setGiveaways([newGiveaway, ...giveaways])
-        setFormData({ title: '', description: '', prize: '', endDate: '' })
+        setFormData({ title: '', description: '', prize: '', endDate: '', customUrl: '' })
+        setFlyerDataUrl('')
         setShowForm(false)
+        alert('Giveaway created successfully!')
+      } else {
+        const errorData = await response.json()
+        console.error('Failed to create giveaway:', errorData)
+        alert(`Failed to create giveaway: ${errorData.error || 'Unknown error'}`)
       }
     } catch (error) {
       console.error('Failed to create giveaway:', error)
+      alert('Failed to create giveaway. Please check the console for details.')
     }
+  }
+
+  const stripHtml = (html: string) => {
+    if (!html) return ''
+    return html
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+  }
+
+  const getFullDescriptionHtml = () => {
+    if (!flyerDataUrl) return formData.description
+    return `<div class="mb-4"><img src="${flyerDataUrl}" alt="Giveaway flyer" style="width:100%;height:auto;border-radius:12px;" /></div>${formData.description || ''}`
+  }
+
+  const applyWrapAtCursor = (wrapStart: string, wrapEnd: string, placeholder: string) => {
+    const textarea = descriptionRef.current
+    if (!textarea) return
+
+    const value = formData.description || ''
+    const start = textarea.selectionStart ?? value.length
+    const end = textarea.selectionEnd ?? start
+    const selected = value.slice(start, end)
+
+    const hasSelection = start !== end
+    const before = value.slice(0, start)
+    const after = value.slice(end)
+
+    const inner = hasSelection ? selected : placeholder
+    const replacement = `${wrapStart}${inner}${wrapEnd}`
+    const nextValue = `${before}${replacement}${after}`
+
+    setFormData({ ...formData, description: nextValue })
+
+    setTimeout(() => {
+      textarea.focus()
+      const cursor = before.length + wrapStart.length + inner.length
+      textarea.setSelectionRange(cursor, cursor)
+    }, 0)
+  }
+
+  const insertHtmlAtCursor = (html: string) => {
+    const textarea = descriptionRef.current
+    if (!textarea) return
+
+    const value = formData.description || ''
+    const start = textarea.selectionStart ?? value.length
+    const end = textarea.selectionEnd ?? start
+
+    const before = value.slice(0, start)
+    const after = value.slice(end)
+    const nextValue = `${before}${html}${after}`
+
+    setFormData({ ...formData, description: nextValue })
+
+    setTimeout(() => {
+      textarea.focus()
+      const cursor = before.length + html.length
+      textarea.setSelectionRange(cursor, cursor)
+    }, 0)
+  }
+
+  const handleBold = () => applyWrapAtCursor('<strong>', '</strong>', 'Bold text')
+  const handleHeading = () => applyWrapAtCursor('<h2>', '</h2>', 'Heading')
+  const handleBullets = () => {
+    const textarea = descriptionRef.current
+    if (!textarea) return
+
+    const value = formData.description || ''
+    const start = textarea.selectionStart ?? value.length
+    const end = textarea.selectionEnd ?? start
+    const selected = value.slice(start, end)
+
+    const hasSelection = start !== end
+    const items = hasSelection
+      ? selected
+          .split('\n')
+          .map(s => s.trim())
+          .filter(Boolean)
+          .map(s => `<li>${s}</li>`)
+          .join('')
+      : `<li>Item 1</li><li>Item 2</li>`
+
+    insertHtmlAtCursor(`<ul>${items}</ul>`)
+  }
+
+  const handleFlyerUpload = (file: File | null) => {
+    if (!file) {
+      setFlyerDataUrl('')
+      return
+    }
+
+    if (file.size > ADMIN_CONFIG.MAX_IMAGE_SIZE) {
+      alert(`File too large. Max ${Math.round(ADMIN_CONFIG.MAX_IMAGE_SIZE / 1024 / 1024)}MB.`)
+      return
+    }
+
+    if (!ADMIN_CONFIG.ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      alert('Invalid file type. Allowed: JPG/PNG/WebP.')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      setFlyerDataUrl(String(reader.result || ''))
+    }
+    reader.onerror = () => {
+      alert('Failed to read file')
+    }
+    reader.readAsDataURL(file)
   }
 
   const handleDelete = async (id: string) => {
@@ -111,14 +246,67 @@ export default function AdminGiveawaysPage({ params }: { params: { locale: Local
               />
             </div>
             <div>
-              <label className="block mb-2 font-semibold text-gray-700">Description</label>
+              <label className="block mb-2 font-semibold text-gray-700">Description (HTML)</label>
+
+              <div className="flex flex-wrap gap-2 mb-2">
+                <button
+                  type="button"
+                  onClick={handleBold}
+                  className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold transition"
+                >
+                  Bold
+                </button>
+                <button
+                  type="button"
+                  onClick={handleHeading}
+                  className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold transition"
+                >
+                  Heading
+                </button>
+                <button
+                  type="button"
+                  onClick={handleBullets}
+                  className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold transition"
+                >
+                  Bullet List
+                </button>
+              </div>
+
               <textarea
+                ref={descriptionRef}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
-                rows={3}
+                className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600 font-mono text-sm"
+                rows={6}
                 required
               />
+
+              <div className="mt-3">
+                <div className="text-sm font-semibold text-gray-700 mb-2">Preview</div>
+                <div
+                  className="prose prose-sm max-w-none border border-gray-100 rounded-lg p-4 bg-gray-50"
+                  dangerouslySetInnerHTML={{ __html: getFullDescriptionHtml() || '' }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block mb-2 font-semibold text-gray-700">Flyer (optional)</label>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(e) => handleFlyerUpload(e.target.files?.[0] || null)}
+                className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3"
+              />
+              {flyerDataUrl && (
+                <div className="mt-3">
+                  <img
+                    src={flyerDataUrl}
+                    alt="Flyer preview"
+                    className="w-full h-auto rounded-lg border border-gray-200"
+                  />
+                </div>
+              )}
             </div>
             <div>
               <label className="block mb-2 font-semibold text-gray-700">Prize</label>
@@ -139,6 +327,22 @@ export default function AdminGiveawaysPage({ params }: { params: { locale: Local
                 className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
                 required
               />
+            </div>
+            <div>
+              <label className="block mb-2 font-semibold text-gray-700">
+                Custom Join URL (optional)
+              </label>
+              <input
+                type="url"
+                value={formData.customUrl}
+                onChange={(e) => setFormData({ ...formData, customUrl: e.target.value })}
+                className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
+                placeholder="https://example.com/giveaway-entry"
+              />
+              <p className="text-sm text-gray-600 mt-1">
+                If provided, users will be redirected to this URL when they click "Join Giveaway". 
+                Leave empty to use the default email subscription.
+              </p>
             </div>
             <div className="flex gap-4">
               <button
@@ -173,7 +377,10 @@ export default function AdminGiveawaysPage({ params }: { params: { locale: Local
                 </button>
               </div>
               <h3 className="font-bold text-lg text-gray-800 mb-2">{giveaway.title}</h3>
-              <p className="text-gray-600 text-sm mb-3">{giveaway.description}</p>
+              <p className="text-gray-600 text-sm mb-3">
+                {stripHtml(giveaway.description).slice(0, 160)}
+                {stripHtml(giveaway.description).length > 160 ? '...' : ''}
+              </p>
               <div className="border-t pt-3 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Prize:</span>

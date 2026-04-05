@@ -31,6 +31,7 @@ interface PropFirm {
   discount?: string
   price: number
   discounted: number
+  priceTag?: string | null
   bonus?: string
   profitSplit?: string
   maxDrawdown?: string

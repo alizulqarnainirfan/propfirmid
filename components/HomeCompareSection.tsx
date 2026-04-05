@@ -14,6 +14,7 @@ interface PropFirm {
   trusted: number
   price: number
   discounted: number
+  priceTag?: string | null
   profitSplit?: string | null
   maxDrawdown?: string | null
 }

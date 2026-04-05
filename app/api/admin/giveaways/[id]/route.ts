@@ -20,16 +20,23 @@ export async function GET(request: Request, { params }: { params: { id: string }
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const data = await request.json()
-    const { title, description, prize, endDate } = data
+    const { title, description, prize, endDate, customUrl } = data
 
-    const giveaway = await prisma.giveaway.update({
-      where: { id: params.id },
-      data: {
-        title,
-        description,
-        prize,
-        endDate: new Date(endDate)
-      }
+    // Use raw SQL to update including customUrl field
+    await prisma.$executeRaw`
+      UPDATE "Giveaway" 
+      SET 
+        "title" = ${title},
+        "description" = ${description},
+        "prize" = ${prize},
+        "endDate" = ${new Date(endDate)}::timestamp,
+        "customUrl" = ${customUrl || null}
+      WHERE "id" = ${params.id}
+    `
+
+    // Fetch the updated giveaway
+    const giveaway = await prisma.giveaway.findUnique({
+      where: { id: params.id }
     })
 
     return NextResponse.json(giveaway)

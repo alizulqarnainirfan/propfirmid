@@ -3,12 +3,22 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const giveaways = await prisma.giveaway.findMany({
-      orderBy: { createdAt: 'desc' }
-    })
+    // Use raw SQL to fetch giveaways including customUrl field
+    const giveaways = await prisma.$queryRaw`
+      SELECT 
+        g.id,
+        g.title,
+        g.description,
+        g.prize,
+        g."endDate",
+        g."customUrl",
+        g."createdAt"
+      FROM "Giveaway" g
+      ORDER BY g."createdAt" DESC
+    `
 
     // Add status based on end date
-    const giveawaysWithStatus = giveaways.map(giveaway => ({
+    const giveawaysWithStatus = (giveaways as any[]).map(giveaway => ({
       ...giveaway,
       status: new Date(giveaway.endDate) > new Date() ? 'active' : 'ended'
     }))
@@ -25,15 +35,24 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { title, description, prize, endDate } = await request.json()
+    const { title, description, prize, endDate, customUrl } = await request.json()
 
-    const giveaway = await prisma.giveaway.create({
-      data: {
-        title,
-        description,
-        prize,
-        endDate: new Date(endDate)
-      }
+    // Generate a unique ID for the new giveaway
+    const giveawayId = `giveaway_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+    // Use raw SQL to insert the new giveaway including customUrl field
+    await prisma.$executeRaw`
+      INSERT INTO "Giveaway" (
+        "id", "title", "description", "prize", "endDate", "customUrl", "createdAt"
+      ) VALUES (
+        ${giveawayId}, ${title}, ${description}, ${prize}, 
+        ${new Date(endDate)}::timestamp, ${customUrl || null}, NOW()
+      )
+    `
+
+    // Fetch the created giveaway
+    const giveaway = await prisma.giveaway.findUnique({
+      where: { id: giveawayId }
     })
 
     return NextResponse.json(giveaway, { status: 201 })

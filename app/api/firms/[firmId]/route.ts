@@ -6,6 +6,7 @@ export async function GET(
   { params }: { params: { firmId: string } }
 ) {
   try {
+    // Use Prisma client directly
     const firm = await prisma.propFirm.findUnique({
       where: { id: params.firmId },
       include: {
@@ -22,7 +23,7 @@ export async function GET(
         }
       }
     })
-
+    
     if (!firm) {
       return NextResponse.json({ error: 'Firm not found' }, { status: 404 })
     }

@@ -22,14 +22,16 @@ model User {
 
 model PropFirm {
   id                 String      @id @default(cuid())
-  name               String
-  logo               String
-  type               String
+  name               String?     @default("")
+  logo               String?     @default("")
+  type               String?     @default("Forex Prop Firm")
   rating             Float       @default(0)
   trusted            Int         @default(0)
   discount           String?
-  price              Float
-  discounted         Float
+  showCouponCode    Boolean     @default(true)
+  price              Float       @default(0)
+  discounted         Float       @default(0)
+  priceTag           String?     @default("Best Price")
   bonus              String?
   profitSplit        String?
   maxDrawdown        String?
@@ -58,21 +60,21 @@ model PropFirm {
 
 model Challenge {
   id              String   @id @default(cuid())
-  firmId          String
-  name            String
-  accountSize     String
-  price           Float
-  discountedPrice Float
+  firmId          String?  @default("")
+  name            String?  @default("")
+  accountSize     String?  @default("")
+  price           String?  @default("0")
+  discountedPrice String?  @default("0")
   phase1Target    String?
   phase2Target    String?
-  maxDrawdown     String
+  maxDrawdown     String?  @default("")
   dailyDrawdown   String?
-  minDays         Int?
-  maxDays         Int?
-  profitSplit     String
+  minDays         String?
+  maxDays         String?
+  profitSplit     String?  @default("")
   refundable      Boolean  @default(false)
   createdAt       DateTime @default(now())
-  firm            PropFirm @relation(fields: [firmId], references: [id])
+  firm            PropFirm? @relation(fields: [firmId], references: [id])
 }
 
 model Post {
@@ -118,6 +120,7 @@ model Giveaway {
   description String
   prize       String
   endDate     DateTime
+  customUrl   String?
   createdAt   DateTime @default(now())
 }
 

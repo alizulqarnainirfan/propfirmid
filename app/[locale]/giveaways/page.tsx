@@ -11,6 +11,7 @@ interface Giveaway {
   description: string
   prize: string
   endDate: string
+  customUrl?: string | null
   status: 'active' | 'ended'
 }
 
@@ -37,14 +38,21 @@ export default function GiveawaysPage({ params }: { params: { locale: Locale } }
     }
   }
 
-  const handleJoin = async (giveawayId: string) => {
+  const handleJoin = async (giveaway: Giveaway) => {
+    // If custom URL is provided, redirect to it
+    if (giveaway.customUrl) {
+      window.open(giveaway.customUrl, '_blank')
+      return
+    }
+
+    // Default behavior: check login and show subscription message
     if (!user) {
       alert(params.locale === 'id' ? 'Silakan login terlebih dahulu' : 'Please login first')
       router.push(`/${params.locale}/login`)
       return
     }
 
-    setJoining(giveawayId)
+    setJoining(giveaway.id)
 
     // Simulate joining (in production, you'd have a join endpoint)
     setTimeout(() => {
@@ -124,7 +132,10 @@ export default function GiveawaysPage({ params }: { params: { locale: Locale } }
                   </div>
                   
                   <div className="p-6">
-                    <p className="text-gray-600 mb-4">{giveaway.description}</p>
+                    <div
+                      className="prose prose-sm max-w-none text-gray-600 mb-4"
+                      dangerouslySetInnerHTML={{ __html: giveaway.description || '' }}
+                    />
                     
                     <div className="mb-4">
                       <div className="text-sm text-gray-600 mb-1">
@@ -144,7 +155,7 @@ export default function GiveawaysPage({ params }: { params: { locale: Locale } }
                     </div>
                     
                     <button 
-                      onClick={() => handleJoin(giveaway.id)}
+                      onClick={() => handleJoin(giveaway)}
                       disabled={joining === giveaway.id}
                       className="w-full bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition font-semibold disabled:opacity-50"
                     >
@@ -179,7 +190,10 @@ export default function GiveawaysPage({ params }: { params: { locale: Locale } }
                   </div>
                   
                   <div className="p-6">
-                    <p className="text-gray-600 mb-4">{giveaway.description}</p>
+                    <div
+                      className="prose prose-sm max-w-none text-gray-600 mb-4"
+                      dangerouslySetInnerHTML={{ __html: giveaway.description || '' }}
+                    />
                     
                     <div className="mb-4">
                       <div className="text-sm text-gray-600 mb-1">

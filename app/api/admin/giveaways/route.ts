@@ -15,20 +15,36 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const data = await request.json()
-    const { title, description, prize, endDate } = data
+    console.log('Received giveaway data:', data)
+    
+    const { title, description, prize, endDate, customUrl } = data
 
+    if (!title || !description || !prize || !endDate) {
+      return NextResponse.json(
+        { error: 'Missing required fields: title, description, prize, endDate' },
+        { status: 400 }
+      )
+    }
+
+    // Use Prisma client directly
     const giveaway = await prisma.giveaway.create({
       data: {
         title,
         description,
         prize,
-        endDate: new Date(endDate)
+        endDate: new Date(endDate),
+        customUrl: customUrl || null
       }
     })
 
+    console.log('Created giveaway:', giveaway)
     return NextResponse.json(giveaway)
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create giveaway' }, { status: 500 })
+    console.error('Error creating giveaway:', error)
+    return NextResponse.json({ 
+      error: 'Failed to create giveaway',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 }
 

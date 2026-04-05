@@ -15,8 +15,10 @@ interface FirmCardProps {
     rating: number
     trusted: number
     discount?: string | null
+    showCouponCode?: boolean | null
     price: number
     discounted: number
+    priceTag?: string | null
     bonus?: string | null
     buyUrl?: string | null
   }
@@ -29,6 +31,10 @@ export default function FirmCard({ firm, rank, locale }: FirmCardProps) {
   const firmUrl = firm.buyUrl || getFirmUrl(firm.name)
   const hasOfficialUrl = firm.buyUrl || hasFirmUrl(firm.name)
   const [copied, setCopied] = useState(false)
+  const showCouponCode = firm.showCouponCode !== false
+
+  // Debug: Log the firm data to see if priceTag is present
+  console.log('FirmCard data for', firm.name, ':', { priceTag: firm.priceTag, firm })
 
   const handleCopyCoupon = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -93,6 +99,13 @@ export default function FirmCard({ firm, rank, locale }: FirmCardProps) {
         </div>
 
         <div className="mb-4">
+          <div className="flex items-center gap-2 mb-1">
+            {firm.priceTag && (
+              <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                {firm.priceTag}
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <span className="text-gray-400 line-through">${firm.price}</span>
             <span className="text-2xl font-bold text-primary-600">${firm.discounted}</span>
@@ -101,36 +114,38 @@ export default function FirmCard({ firm, rank, locale }: FirmCardProps) {
       </Link>
 
       {/* Coupon Code Section */}
-      <div className="mb-4">
-        <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-lg p-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">
-                {locale === 'id' ? 'Kode Kupon:' : 'Coupon Code:'}
-              </span>
-              <span className="font-bold text-primary-700 bg-white px-2 py-1 rounded text-sm">
-                PROPINDO
-              </span>
+      {showCouponCode && (
+        <div className="mb-4">
+          <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-lg p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">
+                  {locale === 'id' ? 'Kode Kupon:' : 'Coupon Code:'}
+                </span>
+                <span className="font-bold text-primary-700 bg-white px-2 py-1 rounded text-sm">
+                  PROPINDO
+                </span>
+              </div>
+              <button
+                onClick={handleCopyCoupon}
+                className="flex items-center justify-center w-8 h-8 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-200 hover:scale-105"
+                title={locale === 'id' ? 'Salin kode kupon' : 'Copy coupon code'}
+              >
+                {copied ? (
+                  <FaCheck size={12} className="text-green-200" />
+                ) : (
+                  <FaCopy size={12} />
+                )}
+              </button>
             </div>
-            <button
-              onClick={handleCopyCoupon}
-              className="flex items-center justify-center w-8 h-8 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-200 hover:scale-105"
-              title={locale === 'id' ? 'Salin kode kupon' : 'Copy coupon code'}
-            >
-              {copied ? (
-                <FaCheck size={12} className="text-green-200" />
-              ) : (
-                <FaCopy size={12} />
-              )}
-            </button>
+            {copied && (
+              <div className="mt-2 text-xs text-green-600 font-medium">
+                {locale === 'id' ? '✓ Kode berhasil disalin!' : '✓ Code copied successfully!'}
+              </div>
+            )}
           </div>
-          {copied && (
-            <div className="mt-2 text-xs text-green-600 font-medium">
-              {locale === 'id' ? '✓ Kode berhasil disalin!' : '✓ Code copied successfully!'}
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
       {/* Action buttons */}
       <div className="flex gap-2">

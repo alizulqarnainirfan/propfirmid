@@ -14,8 +14,10 @@ export default function NewFirmPage({ params }: { params: { locale: Locale } }) 
     rating: '4.0',
     trusted: '0',
     discount: '',
+    showCouponCode: true,
     price: '0',
     discounted: '0',
+    priceTag: 'Best Price',
     bonus: '',
     profitSplit: '80%',
     maxDrawdown: '10%',
@@ -63,10 +65,7 @@ export default function NewFirmPage({ params }: { params: { locale: Locale } }) 
   }, [])
 
   const addChallenge = () => {
-    if (!newChallenge.accountSize || !newChallenge.price) {
-      alert('Please fill in at least Account Size and Price')
-      return
-    }
+    // Validation removed - allow any input
     setChallenges([...challenges, { ...newChallenge, id: Date.now().toString() }])
     setNewChallenge({
       name: '',
@@ -122,24 +121,22 @@ export default function NewFirmPage({ params }: { params: { locale: Locale } }) 
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-md p-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block mb-2 font-semibold text-gray-700">Firm Name *</label>
+              <label className="block mb-2 font-semibold text-gray-700">Firm Name</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
-                required
               />
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold text-gray-700">Logo URL *</label>
+              <label className="block mb-2 font-semibold text-gray-700">Logo URL</label>
               <input
-                type="url"
+                type="text"
                 value={formData.logo}
                 onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
                 className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
-                required
               />
             </div>
 
@@ -190,6 +187,21 @@ export default function NewFirmPage({ params }: { params: { locale: Locale } }) 
             </div>
 
             <div>
+              <label className="block mb-2 font-semibold text-gray-700">Show Coupon Code</label>
+              <label className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-lg p-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.showCouponCode !== false}
+                  onChange={(e) => setFormData({ ...formData, showCouponCode: e.target.checked })}
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-600 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700">
+                  {params.locale === 'id' ? 'Tampilkan kode kupon' : 'Show coupon code'}
+                </span>
+              </label>
+            </div>
+
+            <div>
               <label className="block mb-2 font-semibold text-gray-700">Price</label>
               <input
                 type="number"
@@ -206,6 +218,17 @@ export default function NewFirmPage({ params }: { params: { locale: Locale } }) 
                 value={formData.discounted}
                 onChange={(e) => setFormData({ ...formData, discounted: e.target.value })}
                 className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-semibold text-gray-700">Price Tag</label>
+              <input
+                type="text"
+                value={formData.priceTag}
+                onChange={(e) => setFormData({ ...formData, priceTag: e.target.value })}
+                className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg p-3 focus:ring-2 focus:ring-primary-600 focus:border-primary-600"
+                placeholder="e.g., Cheapest Price, Best Deal, Limited Offer"
               />
             </div>
 
